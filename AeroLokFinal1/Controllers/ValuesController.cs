@@ -115,21 +115,40 @@ namespace AeroLokFinal1.Controllers
             //// request.AddParameter("undefined", "{\r\n  \"Inputs\": {\r\n    \"input1\": {\r\n      \"ColumnNames\": [\r\n        \"Col1\"\r\n      ],\r\n      \"Values\": [\r\n        [\r\n          \"" + path + "\"\r\n        ],\r\n        [\r\n          \"value\"\r\n        ]\r\n      ]\r\n    }\r\n  },\r\n  \"GlobalParameters\": {}\r\n}", ParameterType.RequestBody);
             //request.AddParameter("undefined", "{\r\n  \"Inputs\": {\r\n    \"input1\": {\r\n      \"ColumnNames\": [\r\n        \"Col1\"\r\n      ],\r\n      \"Values\": [\r\n        [\r\n          \"" + path + "\"\r\n        ],\r\n        [\r\n          \"value\"\r\n        ]\r\n      ]\r\n    }\r\n  },\r\n  \"GlobalParameters\": {}\r\n}", ParameterType.RequestBody);
             //IRestResponse response = client.Execute(request);
-            var client = new RestClient("https://ussouthcentral.services.azureml.net/workspaces/f357977d76974a8f87368f838ae1e4c0/services/f5b3a9b6ea4949c88770f20de5f331e2/execute?api-version=2.0&details=true");
-            var request = new RestRequest(Method.POST);
-            //request.AddHeader("Postman-Token", "7e4c4b19-917d-4211-b44f-eb8fdd5e0cbf");
-            request.AddHeader("cache-control", "no-cache");
-            request.AddHeader("Authorization", "Bearer FquTrpPDoODSu8XCDCYh4fFjvuiHokw/nn8piAAiIXse6kZ286dKujlxsxwNMIFyluqB2p0tZQqL2eyoRNbOkg==");
+            try
+            {
+                var client = new RestClient("https://ussouthcentral.services.azureml.net/workspaces/f357977d76974a8f87368f838ae1e4c0/services/f5b3a9b6ea4949c88770f20de5f331e2/execute?api-version=2.0&details=true");
+                var request = new RestRequest(Method.POST);
+                //request.AddHeader("Postman-Token", "7e4c4b19-917d-4211-b44f-eb8fdd5e0cbf");
+                request.AddHeader("cache-control", "no-cache");
+                request.AddHeader("Authorization", "Bearer FquTrpPDoODSu8XCDCYh4fFjvuiHokw/nn8piAAiIXse6kZ286dKujlxsxwNMIFyluqB2p0tZQqL2eyoRNbOkg==");
 
-            request.AddHeader("Content-Type", "application/json");
-            request.AddParameter("undefined", "{\r\n  \"Inputs\": {\r\n    \"input1\": {\r\n      \"ColumnNames\": [\r\n        \"Col1\"\r\n      ],\r\n      \"Values\": [\r\n        [\r\n          \"" + path + "\"\r\n        ],\r\n        [\r\n          \"value\"\r\n        ]\r\n      ]\r\n    }\r\n  },\r\n  \"GlobalParameters\": {}\r\n}", ParameterType.RequestBody);
-            IRestResponse response = client.Execute(request);
-            var data = response.Content;
-            var jo = JObject.Parse(data);
-            var res = jo.ToString();
-            dynamic stuff = JsonConvert.DeserializeObject(res);
-            var data2 = stuff.Results.output1.value.Values[0][1];
-            return data2;
+                request.AddHeader("Content-Type", "application/json");
+                request.AddParameter("undefined", "{\r\n  \"Inputs\": {\r\n    \"input1\": {\r\n      \"ColumnNames\": [\r\n        \"Col1\"\r\n      ],\r\n      \"Values\": [\r\n        [\r\n          \"" + path + "\"\r\n        ],\r\n        [\r\n          \"value\"\r\n        ]\r\n      ]\r\n    }\r\n  },\r\n  \"GlobalParameters\": {}\r\n}", ParameterType.RequestBody);
+                IRestResponse response = client.Execute(request);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var data = response.Content;
+                    var jo = JObject.Parse(data);
+                    var res = jo.ToString();
+                    dynamic stuff = JsonConvert.DeserializeObject(res);
+                    var data2 = stuff.Results.output1.value.Values[0][1];
+                    return data2;
+                }
+                if (response.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    return response.Content;
+                }
+                else
+                {
+                    return response.Content;
+                }
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
+            
 
             //var res = InvokeRequestResponseService(path).Result;
             //return res;
