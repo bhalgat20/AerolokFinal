@@ -135,13 +135,9 @@ namespace AeroLokFinal1.Controllers
                     var data2 = stuff.Results.output1.value.Values[0][1];
                     return data2;
                 }
-                if (response.StatusCode == HttpStatusCode.InternalServerError)
-                {
-                    return response.Content;
-                }
                 else
                 {
-                    return response.Content;
+                    return response.ErrorMessage;
                 }
             }
             catch(Exception e)
